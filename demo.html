@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="VDOM.js"></script>
+    <script src="typeAni.js"></script>
+    <script>
+      const headline = createElement("span", { class: "headline" }, ["縱有疾風起，人生不言棄"], 2);
+      const title = createElement("h3", { class: "title" }, ["起风了"], 1);
+      const br=createElement("br",{},[],7);
+      const button=createElement("button",{class:'button'},["查看更多"],5);
+      const div = createElement("div", { class: "box" }, [title,headline,br,button], 0);
+
+      const domTree = render(document.getElementById("app"), div.render());
+      addAni(headline,300);
+
+      document.querySelector(".button").addEventListener("click", () => {
+
+        const describe = createElement("p", { class: "describe" }, ["《起风了》是日本昭和初期感觉派作家堀辰雄创作的中篇小说。该作描写男主人公陪伴未婚妻节子在山中疗养，二人共同在疾病中寻觅生的幸福而又不得不面对死亡，描绘了二人对幸福的向往、对现实的无奈、对自我的反思和对爱情的忠贞。"], 4);
+        const container=createElement("div",{class:'container'},[describe],3);
+        const button=createElement("button",{class:'button'},["收起"],5);
+        const div1 = createElement("div", { class: "box" }, [title, headline, container], 0);
+        console.log(div)
+        console.log(div1)
+        console.log(diff(div,div1))
+        patch(domTree, diff(div, div1));
+      });
+
+    </script>
+  </body>
+</html>
