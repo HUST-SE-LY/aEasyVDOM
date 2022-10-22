@@ -8,13 +8,22 @@ const patchStyle = {
   TEXT_REPLACE: 6,//文本被替换
 };
 
+const React = {
+  createElement(tagName, props, ...children) {
+    props=props?props:{};
+    const key=props.key?props.key:'_No_KEY';
+    children=children?children:[];
+    return createElement(tagName,props,children,key);
+  },
+};
+
 class Node {
   constructor(tagName, props, children, key) {
     //加上KEY便于后续遍历
     this.tagName = tagName;
     this.props = props;
     this.children = children ? children : []; //chidlren要么是Node数组要么是字符串要么是空
-    this.key = key;
+    this.key =props.key?props.key: key;
   }
   render(parent) {
     //传入一个父节点
@@ -38,6 +47,7 @@ class Node {
     return tag;
   }
 }
+
 
 function createElement(tagName, props, children, key) {
   let node = new Node(tagName, props, children, key);
@@ -151,11 +161,13 @@ function patch(node, patches) {//应用补丁，传入dom节点
   const index = {
     value: 0,
   };
+  const _node=JSON.parse(JSON.stringify(node));
   dfsUpdate(node, patches, index);//开始dfs,因为patches也是由dfs生成，和dfsdom树的顺序一样，因此同步应用即可
   return node;
 }
 
 function dfsUpdate(node, patches, index, end) {
+  let isDeleted=false;
   if (!patches[index.value]) {
     return;
   }
@@ -166,8 +178,8 @@ function dfsUpdate(node, patches, index, end) {
           node.appendChild(difference.value.render());
           break;
         case patchStyle.NODE_DELETE:
-          console.log(index.value)
           node.remove();
+          isDeleted=true;
           break;
         case patchStyle.NODE_REPLACE:
           node.replaceWith(difference.value.render());
@@ -192,17 +204,19 @@ function dfsUpdate(node, patches, index, end) {
     return;
   }
 
+  if(isDeleted) {
+    return "delete"
+  }
+
   if (node.children.length > 0) {
     for (let i = 0; i < node.children.length; i++) {
       index.value++;
-      console.log(index.value)
-      console.log(node.children[i])
-      dfsUpdate(node.children[i], patches, index);
+      if(dfsUpdate(node.children[i], patches, index)==="delete") {
+        i--;
+      };
     }
   } else if(node.innerText) {//dom元素无法通过children获取到文本节点
     index.value++;
-    console.log(index.value)
-    console.log(node)
     dfsUpdate(node, patches, index, true);
   }
 }
