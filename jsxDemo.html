@@ -11,46 +11,69 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="" />
+    <style>
+      .title {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="VDOM.js"></script>
+    <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+    <script src="VDOM2.js"></script>
     <script src="typeAni.js"></script>
-    <script type="text/babel">
-      const box1 = (
-        <div>
-          <h1>芝士标题</h1>
-          <ul>
-            <li>1芝士雪豹</li>
-            <li>2芝士猞猁</li>
-            <li>3芝士顶真</li>
-            <li>4芝士瑞克</li>
-            <li>5芝士芝士</li>
-          </ul>
-          <p>芝士一段话</p>
-          <div><span>span</span></div>
-        </div>
-      );
-      const box2 = (
-        <div>
-          <h1>芝士雪豹</h1>
-          <ul>
-            <li>1</li>
-            <li>5</li>
-            <li>哥们在这给你说唱</li>
-          </ul>
-          <p>都什么年代</p>
-          <p>还在抽传统香烟</p>
-          <div>1!5!</div>
-        </div>
-      );
-      console.log(box1)
-      console.log(box2)
-      console.log(diff(box1,box2))
-      const domTree=render(document.getElementById("app"), box1.render());
-      patch(domTree,diff(box1,box2))
-      console.log(domTree)
+    <script>
+      const h1=createElement("h1",{},[],'1','芝士标题');
+      const li1=createElement("li",{},[],'3','芝士雪豹');
+      const li2=createElement("li",{},[],'4','芝士猞猁');
+      const li3=createElement("li",{},[],'5','芝士顶真');
+      const li4=createElement("li",{},[],'6','芝士瑞克');
+      const li5=createElement("li",{},[],'7','芝士芝士');
+      const p1=createElement("p",{},[],'8','芝士一句话');
+      const p2=createElement("p",{},[],'12','芝士增加的一句话');
+      const span=createElement("span",{},[],'10','span');
+      const div1=createElement("div",{},[span],'11');
+      const ul=createElement("ul",{},[li1,li2,li3,li4,li5],'2');
+      const box1=createElement("div",{},[h1,ul,p1,div1],'3');
+      const li6=createElement("li",{},[],'3','雪豹');
+      const ul2=createElement("ul",{},[li6,li3,li4,li5,li2],'2');
+      const h2=createElement("h1",{class:'title'},[],'1','标题');
+      const div2=createElement("div",{},[],'11','span消失了');
+      const box2=createElement("div",{},[ul2,h2,div2,p1,p2],'2');
+      // const box1 = (
+      //   <div key='0'>
+      //     <h1 key='1'>芝士标题</h1>
+      //     <ul key='2'>
+      //       <li key='3'>1芝士雪豹</li>
+      //       <li key='4'>2芝士猞猁</li>
+      //       <li key='5'>3芝士顶真</li>
+      //       <li key='6'>4芝士瑞克</li>
+      //       <li key='7'>5芝士芝士</li>
+      //     </ul>
+      //     <p key='8'>芝士一段话</p>
+      //     <div key='10'><span key='9'>span</span></div>
+      //   </div>
+      // );
+      // const box2 = (
+      //   <div key='0'>
+      //     <h1 key='1'>芝士雪豹</h1>
+      //     <ul key='2'>
+      //       <li key='3'>1</li>
+      //       <li key='4'>5</li>
+      //       <li key='5'>哥们在这给你说唱</li>
+      //     </ul>
+      //     <p key='6'>都什么年代</p>
+      //     <p key='7'>还在抽传统香烟</p>
+      //     <div key='8'>1!5!</div>
+      //   </div>
+      // );
+      const el=render(document.getElementById('app'),box1.render())
+      box1.el=el;
+      // console.log(box1)
+      // console.log(box2)
+      patch(box1,box2)
+
+     
 
     </script>
   </body>

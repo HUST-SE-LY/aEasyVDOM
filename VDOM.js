@@ -20,6 +20,7 @@ const React = {
 class Node {
   constructor(tagName, props, children, key) {
     //加上KEY便于后续遍历
+    this.el=null;//对应其真实dom
     this.tagName = tagName;
     this.props = props;
     this.children = children ? children : []; //chidlren要么是Node数组要么是字符串要么是空
@@ -44,7 +45,8 @@ class Node {
     if (parent) {
       parent.appendChild(tag); //将当前节点置于父节点下
     }
-    return tag;
+    this.el=tag;
+    return tag;//返回dom元素
   }
 }
 
@@ -161,13 +163,13 @@ function patch(node, patches) {//应用补丁，传入dom节点
   const index = {
     value: 0,
   };
-  const _node=JSON.parse(JSON.stringify(node));
   dfsUpdate(node, patches, index);//开始dfs,因为patches也是由dfs生成，和dfsdom树的顺序一样，因此同步应用即可
   return node;
 }
 
 function dfsUpdate(node, patches, index, end) {
-  let isDeleted=false;
+  console.log(node);
+  let length=node.children?node.children.length:0;
   if (!patches[index.value]) {
     return;
   }
@@ -179,7 +181,6 @@ function dfsUpdate(node, patches, index, end) {
           break;
         case patchStyle.NODE_DELETE:
           node.remove();
-          isDeleted=true;
           break;
         case patchStyle.NODE_REPLACE:
           node.replaceWith(difference.value.render());
@@ -204,16 +205,10 @@ function dfsUpdate(node, patches, index, end) {
     return;
   }
 
-  if(isDeleted) {
-    return "delete"
-  }
-
   if (node.children.length > 0) {
-    for (let i = 0; i < node.children.length; i++) {
+    for (let i = 0; i < length; i++) {
       index.value++;
-      if(dfsUpdate(node.children[i], patches, index)==="delete") {
-        i--;
-      };
+      dfsUpdate(node.children[i], patches, index)
     }
   } else if(node.innerText) {//dom元素无法通过children获取到文本节点
     index.value++;
